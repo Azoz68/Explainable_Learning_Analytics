@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نموذج الإنذار المبكر للطلاب</title>
+<style>
+:root{
+  color-scheme: light;
+  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+  --pos:#2a78d6; --neg:#e34948; --divmid:#f0efec;
+  --s1:#2a78d6; --s2:#eb6834;
+  --crit:#d03b3b; --accent:#1c5cab;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);
+  font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;font-size:14.5px;line-height:1.65}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 18px 60px}
+header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;
+  border-bottom:1px solid var(--grid);padding-bottom:12px;margin-bottom:16px}
+h1{font-size:20px;margin:0;font-weight:650}
+.sub{color:var(--ink2);font-size:13px}
+.badge{background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  padding:2px 9px;font-size:12.5px;color:var(--ink2)}
+h2{font-size:13.5px;font-weight:650;margin:0 0 10px;color:var(--ink)}
+h2 .hint{font-weight:400;color:var(--muted);font-size:12px}
+.en{direction:ltr;unicode-bidi:isolate;display:inline-block}
+.num{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+.tabs{display:flex;gap:8px;margin:14px 0 18px;flex-wrap:wrap}
+.tab{border:1px solid var(--border);background:var(--surface);border-radius:8px;
+  padding:8px 18px;font-size:14px;cursor:pointer;color:var(--ink2);font-family:inherit}
+.tab:hover{border-color:var(--axis)}
+.tab.on{border-color:var(--accent);color:var(--accent);font-weight:650;
+  box-shadow:inset 0 0 0 1px var(--accent)}
+.grid{display:grid;grid-template-columns:350px 1fr;gap:14px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.pgroup{margin-bottom:10px}
+.pgroup h3{font-size:11.5px;letter-spacing:.02em;color:var(--muted);margin:0 0 4px;font-weight:600}
+.prow{display:flex;justify-content:space-between;gap:10px;padding:2.5px 0;font-size:13px}
+.prow .k{color:var(--ink2)}
+.prow .v{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;font-weight:550;text-align:left}
+.models{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.models{grid-template-columns:1fr}}
+.model h3{margin:0 0 2px;font-size:13.5px;font-weight:650}
+.model .mnote{font-size:11.5px;color:var(--muted);margin-bottom:8px}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:99px;
+  padding:2px 11px;font-size:12.5px;font-weight:650;margin:2px 0 10px}
+.chip.risk{background:#fbe9e9;color:var(--crit)}
+.chip.ok{background:#e8f6e8;color:#006300}
+.prob{display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:8px;margin:5px 0}
+.prob .lbl{font-size:13px;color:var(--ink2)}
+.prob .lbl.pred{color:var(--ink);font-weight:650}
+.prob .track{height:12px;background:var(--divmid);border-radius:4px;position:relative}
+.prob .fill{position:absolute;top:0;bottom:0;right:0;border-radius:4px;background:var(--axis);min-width:2px}
+.prob .fill.pred{background:var(--pos)}
+.prob .pct{font-size:12.5px;text-align:left;direction:ltr;unicode-bidi:isolate;
+  font-variant-numeric:tabular-nums;color:var(--ink2)}
+.agree{font-size:12.5px;color:var(--ink2);border-top:1px solid var(--grid);margin-top:10px;padding-top:8px}
+.xp3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:980px){.xp3{grid-template-columns:1fr}}
+.xrow{display:grid;grid-template-columns:130px 1fr;gap:8px;align-items:center;margin:6px 0}
+.xrow .fn{font-size:12px;color:var(--ink2);line-height:1.3;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.dtrack{position:relative;height:13px;direction:ltr}
+.dtrack .mid{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--axis)}
+.dtrack .bar{position:absolute;top:1px;bottom:1px;border-radius:3px}
+.dtrack .bar.p{left:50%;background:var(--pos)}
+.dtrack .bar.n{right:50%;background:var(--neg)}
+.mtrack{position:relative;height:13px;background:var(--divmid);border-radius:3px;direction:ltr}
+.mtrack .bar{position:absolute;top:1px;bottom:1px;left:0;border-radius:3px;background:var(--pos)}
+.wnote{font-size:12px;color:var(--ink2);background:var(--divmid);border-radius:6px;padding:6px 10px;margin-bottom:8px}
+.wbar{height:8px;border-radius:4px;background:var(--s2);overflow:hidden;margin:5px 0 2px;direction:ltr}
+.wbar i{display:block;height:100%;background:var(--s1)}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin-top:8px;flex-wrap:wrap}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-left:5px}
+.tviz{width:100%;overflow-x:auto;direction:ltr}
+svg text{font-family:inherit}
+.tooltip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;
+  padding:4px 9px;border-radius:5px;opacity:0;transition:opacity .08s;z-index:9;white-space:nowrap}
+footer{margin-top:22px;color:var(--muted);font-size:12px;border-top:1px solid var(--grid);padding-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>نموذج الإنذار المبكر للطلاب</h1>
+    <div class="sub">تنبؤات قابلة للتفسير من أول ٣٠ يومًا من الدراسة &middot; بيانات بحثية مجهولة الهوية من مجموعة <span class="en">OULAD</span></div>
+  </div>
+  <span class="badge">نقطة التنبؤ: اليوم <span class="num">30</span> من المقرر</span>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="grid">
+  <div class="stack">
+    <div class="card">
+      <h2>مؤشرات الطالب <span class="hint">&middot; من أول ٣٠ يومًا فقط</span></h2>
+      <div id="profile"></div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="card">
+      <h2>النتيجة المتوقَّعة</h2>
+      <div class="models" id="models"></div>
+      <div class="agree" id="agree"></div>
+    </div>
+
+    <div class="card">
+      <h2>لماذا؟ &mdash; ثلاث طرق للتفسير <span class="hint">&middot; أهم ٨ عوامل في كل طريقة، للنتيجة المتوقَّعة</span></h2>
+      <div class="xp3" id="xpanels"></div>
+      <div class="legend">
+        <span><b style="background:var(--pos)"></b>يدفع نحو النتيجة المتوقَّعة</span>
+        <span><b style="background:var(--neg)"></b>يدفع بعيدًا عنها</span>
+        <span><b style="background:var(--pos)"></b>الهجين: الأهمية المجمَّعة (المقدار فقط)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>متى؟ &mdash; أي الأيام أثّرت في النموذج <span class="hint">&middot; انتباه <span class="en">HTBT</span> المتقاطع عبر نافذة الثلاثين يومًا</span></h2>
+      <div class="tviz" id="temporal"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  نموذج بحثي أوّلي لغرض التغذية الراجعة من الخبراء &middot; جميع السجلات لطلاب حقيقيين لكنها مجهولة الهوية تمامًا من مجموعة <span class="en">OULAD</span> العامة
+  &middot; التنبؤات تقديرات نموذج غايتها دعم الحكم المهني لا استبداله.
+</footer>
+</div>
+<div class="tooltip" id="tip"></div>
+
+<script id="DATA" type="application/json">{"meta": {"class_names": ["Distinction", "Fail", "Pass", "Withdrawn"], "cutoff_day": 30, "xgb_test_accuracy": 0.5762, "generated": "2026-09-02", "feature_groups": {"Assessment": ["avg_score", "weighted_score", "performance_trend", "num_assessments", "first_submission", "last_submission", "num_of_prev_attempts", "studied_credits"], "Engagement": ["total_clicks", "avg_clicks_per_visit", "max_clicks_per_visit", "std_clicks", "active_days", "unique_vle_sites", "clicks_per_active_day", "engagement_efficiency", "burstiness_index", "revisit_ratio"], "Temporal": ["last_activity_day", "study_duration", "first_registration", "activity_entropy", "avg_gap_between_logins"], "Demographic": ["gender", "region", "highest_education", "imd_band", "age_band", "disability", "code_module", "code_presentation"], "Composite": ["cbii", "tpi", "dropout_risk_proxy"]}}, "cases": [{"id": "A", "label": "Case A — high-risk profile", "true_outcome": "Withdrawn", "pred": "Withdrawn", "pred_class": 3, "probs": {"Distinction": 0.0006, "Fail": 0.0011, "Pass": 0.0004, "Withdrawn": 0.9979}, "adaptive_weight_shap": 0.553, "fid_shap": 0.6092, "fid_lime": 0.4914, "features_raw": {"code_module": "DDD", "code_presentation": "2014J", "gender": "F", "region": "East Midlands Region", "highest_education": "A Level or Equivalent", "imd_band": "10-20", "age_band": "0-35", "num_of_prev_attempts": 0.0, "studied_credits": 120.0, "disability": "N", "avg_score": 0.0, "num_assessments": 0.0, "first_submission": 0.0, "last_submission": 0.0, "weighted_score": 0.0, "performance_trend": 0.0, "total_clicks": 305.0, "avg_clicks_per_visit": 2.652, "max_clicks_per_visit": 19.0, "std_clicks": 3.814, "active_days": 9.0, "last_activity_day": -15.0, "unique_vle_sites": 82.0, "clicks_per_active_day": 30.5, "revisit_ratio": 3.675, "study_duration": 311.0, "first_registration": -49.0, "activity_entropy": 1.358, "avg_gap_between_logins": 1.25, "burstiness_index": 0.346, "engagement_efficiency": 0.003, "cbii": 0.127, "tpi": 311.0, "dropout_risk_proxy": 0.311}, "shap": {"code_module": 0.25446, "code_presentation": 0.12415, "gender": 0.02432, "region": 0.06402, "highest_education": -0.00216, "imd_band": 0.05204, "age_band": -0.02449, "num_of_prev_attempts": 0.0314, "studied_credits": 0.31299, "disability": -0.0004, "avg_score": 0.07234, "num_assessments": 0.00186, "first_submission": -0.06104, "last_submission": -0.00962, "weighted_score": 0.03023, "performance_trend": -0.00251, "total_clicks": 0.12447, "avg_clicks_per_visit": 0.05007, "max_clicks_per_visit": 0.02688, "std_clicks": 0.00723, "active_days": 0.07908, "last_activity_day": 2.32332, "unique_vle_sites": 0.04255, "clicks_per_active_day": -0.03827, "revisit_ratio": 0.09364, "study_duration": 0.01614, "first_registration": 0.08221, "activity_entropy": 0.19821, "avg_gap_between_logins": 0.0078, "burstiness_index": 0.08719, "engagement_efficiency": 0.25795, "cbii": 0.23206, "tpi": 0.17806, "dropout_risk_proxy": 0.02031}, "lime": {"code_module": 0.10957, "code_presentation": 0.03596, "gender": 0.01694, "region": 0.01046, "highest_education": -0.01257, "imd_band": 0.00993, "age_band": -0.0204, "num_of_prev_attempts": 0.00586, "studied_credits": 0.04556, "disability": -0.0288, "avg_score": 0.00463, "num_assessments": 0.0179, "first_submission": -0.01769, "last_submission": 0.07107, "weighted_score": 0.02526, "performance_trend": 0.00442, "total_clicks": 0.01098, "avg_clicks_per_visit": 0.00965, "max_clicks_per_visit": -0.00149, "std_clicks": 0.00647, "active_days": 0.01119, "last_activity_day": 0.24678, "unique_vle_sites": -0.04623, "clicks_per_active_day": -0.0253, "revisit_ratio": -0.0095, "study_duration": -0.00119, "first_registration": 0.01086, "activity_entropy": -0.00535, "avg_gap_between_logins": -0.01275, "burstiness_index": -0.00257, "engagement_efficiency": 5e-05, "cbii": 0.07979, "tpi": 0.10364, "dropout_risk_proxy": -0.01208}, "hybrid": {"code_module": 0.07592, "code_presentation": 0.02947, "gender": 0.01005, "region": 0.0117, "highest_education": 0.00568, "imd_band": 0.01013, "age_band": 0.01157, "num_of_prev_attempts": 0.00606, "studied_credits": 0.05481, "disability": 0.01249, "avg_score": 0.01012, "num_assessments": 0.00795, "first_submission": 0.01449, "last_submission": 0.0318, "weighted_score": 0.01431, "performance_trend": 0.00219, "total_clicks": 0.01871, "avg_clicks_per_visit": 0.00979, "max_clicks_per_visit": 0.00366, "std_clicks": 0.00361, "active_days": 0.01371, "last_activity_day": 0.36734, "unique_vle_sites": 0.02476, "clicks_per_active_day": 0.01523, "revisit_ratio": 0.01461, "study_duration": 0.00232, "first_registration": 0.01392, "activity_entropy": 0.02455, "avg_gap_between_logins": 0.00639, "burstiness_index": 0.01089, "engagement_efficiency": 0.02896, "cbii": 0.06053, "tpi": 0.06478, "dropout_risk_proxy": 0.0075}, "htbt": {"probs": {"Distinction": 0.0001, "Fail": 0.027, "Pass": 0.0014, "Withdrawn": 0.9715}, "pred": "Withdrawn", "attention": [0.04185, 0.04285, 0.0447, 0.04646, 0.04719, 0.04671, 0.04564, 0.04514, 0.04567, 0.04662, 0.04703, 0.04612, 0.04429, 0.04239, 0.04147, 0.0409, 0.03763, 0.03001, 0.02375, 0.01994, 0.01792, 0.01712, 0.01701, 0.01708, 0.01711, 0.01706, 0.01706, 0.01725, 0.01771, 0.01832], "daily_clicks_log1p": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}}, {"id": "B", "label": "Case B — borderline profile", "true_outcome": "Fail", "pred": "Fail", "pred_class": 1, "probs": {"Distinction": 0.0131, "Fail": 0.4594, "Pass": 0.454, "Withdrawn": 0.0735}, "adaptive_weight_shap": 0.588, "fid_shap": 0.2431, "fid_lime": 0.1701, "features_raw": {"code_module": "FFF", "code_presentation": "2014B", "gender": "M", "region": "East Midlands Region", "highest_education": "Lower Than A Level", "imd_band": "10-20", "age_band": "35-55", "num_of_prev_attempts": 0.0, "studied_credits": 60.0, "disability": "N", "avg_score": 74.667, "num_assessments": 3.0, "first_submission": 10.0, "last_submission": 23.0, "weighted_score": 78.0, "performance_trend": -2.5, "total_clicks": 732.0, "avg_clicks_per_visit": 4.089, "max_clicks_per_visit": 110.0, "std_clicks": 10.855, "active_days": 25.0, "last_activity_day": 29.0, "unique_vle_sites": 56.0, "clicks_per_active_day": 28.154, "revisit_ratio": 12.842, "study_duration": 314.0, "first_registration": -73.0, "activity_entropy": 2.627, "avg_gap_between_logins": 1.5, "burstiness_index": 0.509, "engagement_efficiency": 0.103, "cbii": 0.507, "tpi": 78.5, "dropout_risk_proxy": 0.015}, "shap": {"code_module": 0.13071, "code_presentation": 0.00308, "gender": 0.18292, "region": -0.04416, "highest_education": 0.12618, "imd_band": 0.17213, "age_band": -0.09064, "num_of_prev_attempts": -0.05052, "studied_credits": -0.02058, "disability": -0.00093, "avg_score": 0.15706, "num_assessments": -0.00181, "first_submission": -0.01135, "last_submission": 0.06156, "weighted_score": 0.01139, "performance_trend": -0.0272, "total_clicks": -0.04376, "avg_clicks_per_visit": -0.03702, "max_clicks_per_visit": 0.2492, "std_clicks": 0.00266, "active_days": -0.01076, "last_activity_day": 0.02162, "unique_vle_sites": -0.04017, "clicks_per_active_day": -0.01896, "revisit_ratio": -0.08943, "study_duration": 0.03606, "first_registration": 0.00701, "activity_entropy": -0.05297, "avg_gap_between_logins": -0.04312, "burstiness_index": -0.03293, "engagement_efficiency": -0.01575, "cbii": 0.02983, "tpi": 0.28169, "dropout_risk_proxy": 0.03634}, "lime": {"code_module": 0.05638, "code_presentation": -0.00967, "gender": 0.0422, "region": -0.01206, "highest_education": 0.04706, "imd_band": 0.04663, "age_band": -0.01902, "num_of_prev_attempts": -0.04717, "studied_credits": 0.02251, "disability": 0.0032, "avg_score": -0.03823, "num_assessments": -0.00041, "first_submission": 0.00647, "last_submission": 0.01723, "weighted_score": -0.02249, "performance_trend": 0.00437, "total_clicks": -0.0505, "avg_clicks_per_visit": -0.00622, "max_clicks_per_visit": -0.0038, "std_clicks": -0.00643, "active_days": -0.02112, "last_activity_day": 0.01543, "unique_vle_sites": -0.02016, "clicks_per_active_day": 0.02982, "revisit_ratio": -0.0494, "study_duration": -0.00354, "first_registration": 0.00881, "activity_entropy": -0.02425, "avg_gap_between_logins": -0.00524, "burstiness_index": -0.00465, "engagement_efficiency": -0.00146, "cbii": 0.02625, "tpi": 0.03564, "dropout_risk_proxy": 0.01017}, "hybrid": {"code_module": 0.06823, "code_presentation": 0.00639, "gender": 0.07445, "region": 0.01905, "highest_education": 0.06165, "imd_band": 0.07403, "age_band": 0.03581, "num_of_prev_attempts": 0.04092, "studied_credits": 0.01856, "disability": 0.00209, "avg_score": 0.06507, "num_assessments": 0.00073, "first_submission": 0.00683, "last_submission": 0.02679, "weighted_score": 0.01602, "performance_trend": 0.00998, "total_clicks": 0.04098, "avg_clicks_per_visit": 0.01373, "max_clicks_per_visit": 0.07064, "std_clicks": 0.00442, "active_days": 0.01506, "last_activity_day": 0.01479, "unique_vle_sites": 0.02259, "clicks_per_active_day": 0.02231, "revisit_ratio": 0.05289, "study_duration": 0.01194, "first_registration": 0.00698, "activity_entropy": 0.02846, "avg_gap_between_logins": 0.01485, "burstiness_index": 0.01171, "engagement_efficiency": 0.00517, "cbii": 0.02324, "tpi": 0.09783, "dropout_risk_proxy": 0.01581}, "htbt": {"probs": {"Distinction": 0.0757, "Fail": 0.1697, "Pass": 0.5909, "Withdrawn": 0.1638}, "pred": "Pass", "attention": [0.04193, 0.02524, 0.02528, 0.04184, 0.02678, 0.02622, 0.04261, 0.0254, 0.02689, 0.02573, 0.02581, 0.02561, 0.02755, 0.02844, 0.04471, 0.04538, 0.03154, 0.04746, 0.02463, 0.02605, 0.02681, 0.02813, 0.05431, 0.05427, 0.03017, 0.03063, 0.02971, 0.02894, 0.0533, 0.02863], "daily_clicks_log1p": [0.0, 3.045, 3.258, 0.0, 1.609, 1.946, 0.0, 5.05, 1.609, 2.996, 3.091, 4.736, 1.386, 1.099, 0.0, 0.0, 0.693, 0.0, 3.892, 2.639, 3.466, 3.296, 0.0, 0.0, 4.111, 2.197, 3.332, 4.277, 0.0, 2.398]}}, {"id": "C", "label": "Case C — on-track profile", "true_outcome": "Pass", "pred": "Pass", "pred_class": 2, "probs": {"Distinction": 0.0075, "Fail": 0.0273, "Pass": 0.9362, "Withdrawn": 0.029}, "adaptive_weight_shap": 0.43, "fid_shap": 0.3978, "fid_lime": 0.5276, "features_raw": {"code_module": "AAA", "code_presentation": "2014J", "gender": "F", "region": "East Anglian Region", "highest_education": "A Level or Equivalent", "imd_band": "60-70%", "age_band": "0-35", "num_of_prev_attempts": 0.0, "studied_credits": 60.0, "disability": "Y", "avg_score": 70.0, "num_assessments": 1.0, "first_submission": 19.0, "last_submission": 19.0, "weighted_score": 70.0, "performance_trend": 0.0, "total_clicks": 176.0, "avg_clicks_per_visit": 2.347, "max_clicks_per_visit": 8.0, "std_clicks": 1.885, "active_days": 16.0, "last_activity_day": 26.0, "unique_vle_sites": 24.0, "clicks_per_active_day": 10.353, "revisit_ratio": 7.04, "study_duration": 319.0, "first_registration": -50.0, "activity_entropy": 2.603, "avg_gap_between_logins": 3.333, "burstiness_index": 1.183, "engagement_efficiency": 0.401, "cbii": 0.468, "tpi": 159.5, "dropout_risk_proxy": 0.032}, "shap": {"code_module": 0.90017, "code_presentation": 0.02143, "gender": 0.00441, "region": 0.01482, "highest_education": 0.16233, "imd_band": 0.03503, "age_band": 0.0003, "num_of_prev_attempts": 0.00267, "studied_credits": 0.03177, "disability": -0.04917, "avg_score": 0.12987, "num_assessments": 0.04226, "first_submission": 0.04788, "last_submission": 0.0006, "weighted_score": 0.11516, "performance_trend": -0.00227, "total_clicks": 0.01723, "avg_clicks_per_visit": 0.05508, "max_clicks_per_visit": -0.02603, "std_clicks": 0.06579, "active_days": 0.02272, "last_activity_day": 0.12967, "unique_vle_sites": 0.06224, "clicks_per_active_day": 0.01353, "revisit_ratio": 0.03892, "study_duration": 0.02817, "first_registration": -0.01866, "activity_entropy": -0.00256, "avg_gap_between_logins": -0.02184, "burstiness_index": 0.03751, "engagement_efficiency": 0.10697, "cbii": 0.03142, "tpi": 0.04855, "dropout_risk_proxy": 0.06745}, "lime": {"code_module": 0.05724, "code_presentation": 0.03879, "gender": 0.01281, "region": 0.00166, "highest_education": 0.03141, "imd_band": 0.01534, "age_band": -0.00127, "num_of_prev_attempts": -0.00113, "studied_credits": 0.03362, "disability": -0.01032, "avg_score": 0.05497, "num_assessments": 0.0098, "first_submission": 0.01183, "last_submission": 0.01787, "weighted_score": 0.03609, "performance_trend": -0.00279, "total_clicks": -0.00121, "avg_clicks_per_visit": -0.00176, "max_clicks_per_visit": 0.01548, "std_clicks": 0.00455, "active_days": 0.01931, "last_activity_day": 0.01111, "unique_vle_sites": 0.03376, "clicks_per_active_day": 0.00296, "revisit_ratio": -0.00844, "study_duration": 0.00908, "first_registration": -0.01964, "activity_entropy": 0.02779, "avg_gap_between_logins": -0.011, "burstiness_index": -0.00457, "engagement_efficiency": 0.02375, "cbii": 0.01938, "tpi": 0.02423, "dropout_risk_proxy": 0.00231}, "hybrid": {"code_module": 0.22088, "code_presentation": 0.04222, "gender": 0.01346, "region": 0.00435, "highest_education": 0.06066, "imd_band": 0.02154, "age_band": 0.0013, "num_of_prev_attempts": 0.00161, "studied_credits": 0.03901, "disability": 0.01917, "avg_score": 0.078, "num_assessments": 0.0174, "first_submission": 0.02043, "last_submission": 0.01775, "weighted_score": 0.05667, "performance_trend": 0.00317, "total_clicks": 0.00434, "avg_clicks_per_visit": 0.01179, "max_clicks_per_visit": 0.02004, "std_clicks": 0.0165, "active_days": 0.02322, "last_activity_day": 0.03465, "unique_vle_sites": 0.04471, "clicks_per_active_day": 0.00539, "revisit_ratio": 0.01544, "study_duration": 0.01411, "first_registration": 0.02281, "activity_entropy": 0.02791, "avg_gap_between_logins": 0.01485, "burstiness_index": 0.01136, "engagement_efficiency": 0.04299, "cbii": 0.02487, "tpi": 0.0328, "dropout_risk_proxy": 0.0146}, "htbt": {"probs": {"Distinction": 0.1413, "Fail": 0.1856, "Pass": 0.5062, "Withdrawn": 0.167}, "pred": "Pass", "attention": [0.01847, 0.01837, 0.01834, 0.01843, 0.0186, 0.02843, 0.01865, 0.01851, 0.01842, 0.03115, 0.02918, 0.01848, 0.01852, 0.03625, 0.01889, 0.0431, 0.01923, 0.04787, 0.04517, 0.0265, 0.0513, 0.04134, 0.04317, 0.04372, 0.06036, 0.05828, 0.05949, 0.04384, 0.04404, 0.04389], "daily_clicks_log1p": [0.0, 0.0, 0.0, 0.0, 0.0, 2.197, 0.0, 0.0, 0.0, 2.944, 1.792, 0.0, 0.0, 2.773, 0.0, 2.944, 0.0, 2.079, 1.099, 0.0, 1.099, 0.0, 0.0, 0.0, 2.773, 1.609, 2.303, 0.0, 0.0, 0.0]}}, {"id": "D", "label": "Case D — high-achieving profile", "true_outcome": "Distinction", "pred": "Distinction", "pred_class": 0, "probs": {"Distinction": 0.8525, "Fail": 0.0068, "Pass": 0.1337, "Withdrawn": 0.007}, "adaptive_weight_shap": 0.498, "fid_shap": 0.8081, "fid_lime": 0.815, "features_raw": {"code_module": "CCC", "code_presentation": "2014J", "gender": "M", "region": "North Region", "highest_education": "Post Graduate Qualification", "imd_band": "Unknown", "age_band": "35-55", "num_of_prev_attempts": 0.0, "studied_credits": 60.0, "disability": "N", "avg_score": 97.0, "num_assessments": 2.0, "first_submission": 16.0, "last_submission": 21.0, "weighted_score": 95.091, "performance_trend": -6.0, "total_clicks": 487.0, "avg_clicks_per_visit": 3.162, "max_clicks_per_visit": 43.0, "std_clicks": 5.764, "active_days": 35.0, "last_activity_day": 30.0, "unique_vle_sites": 40.0, "clicks_per_active_day": 13.528, "revisit_ratio": 11.878, "study_duration": 326.0, "first_registration": -57.0, "activity_entropy": 2.873, "avg_gap_between_logins": 1.412, "burstiness_index": 0.489, "engagement_efficiency": 0.201, "cbii": 0.589, "tpi": 108.667, "dropout_risk_proxy": 0.025}, "shap": {"code_module": 0.07781, "code_presentation": -0.00088, "gender": -0.00961, "region": 0.03181, "highest_education": 0.65272, "imd_band": 0.18865, "age_band": 0.012, "num_of_prev_attempts": 0.0486, "studied_credits": 0.01464, "disability": 0.00216, "avg_score": 1.34209, "num_assessments": 0.08605, "first_submission": 0.05388, "last_submission": -0.05882, "weighted_score": 0.37405, "performance_trend": -0.02506, "total_clicks": -0.01861, "avg_clicks_per_visit": 0.0326, "max_clicks_per_visit": 0.05221, "std_clicks": 0.12088, "active_days": 0.18461, "last_activity_day": 0.06968, "unique_vle_sites": 0.08413, "clicks_per_active_day": 0.10254, "revisit_ratio": 0.01851, "study_duration": -0.01143, "first_registration": 0.02499, "activity_entropy": 0.18745, "avg_gap_between_logins": -0.0651, "burstiness_index": -0.03184, "engagement_efficiency": -0.00935, "cbii": 0.09282, "tpi": 0.14023, "dropout_risk_proxy": 0.03101}, "lime": {"code_module": -0.00265, "code_presentation": 0.00815, "gender": -0.00177, "region": 0.00682, "highest_education": 0.00779, "imd_band": 0.02474, "age_band": 0.00209, "num_of_prev_attempts": 0.01479, "studied_credits": 0.00297, "disability": 0.00709, "avg_score": 0.0594, "num_assessments": 0.00439, "first_submission": 0.00711, "last_submission": 0.00064, "weighted_score": 0.02646, "performance_trend": 0.00105, "total_clicks": -4e-05, "avg_clicks_per_visit": 0.00071, "max_clicks_per_visit": -0.00174, "std_clicks": -0.00014, "active_days": 0.01528, "last_activity_day": 0.01687, "unique_vle_sites": 0.02366, "clicks_per_active_day": 0.00386, "revisit_ratio": 0.00243, "study_duration": 0.00019, "first_registration": 0.00168, "activity_entropy": 0.02231, "avg_gap_between_logins": 0.00334, "burstiness_index": -0.00098, "engagement_efficiency": 0.00247, "cbii": 0.01834, "tpi": 0.00768, "dropout_risk_proxy": 0.00557}, "hybrid": {"code_module": 0.01347, "code_presentation": 0.01352, "gender": 0.00403, "region": 0.01495, "highest_education": 0.08917, "imd_band": 0.06277, "age_band": 0.00485, "num_of_prev_attempts": 0.03002, "studied_credits": 0.0066, "disability": 0.01192, "avg_score": 0.25469, "num_assessments": 0.01728, "first_submission": 0.01799, "last_submission": 0.00794, "weighted_score": 0.08728, "performance_trend": 0.00466, "total_clicks": 0.00224, "avg_clicks_per_visit": 0.00498, "max_clicks_per_visit": 0.00896, "std_clicks": 0.01436, "active_days": 0.04673, "last_activity_day": 0.03591, "unique_vle_sites": 0.04877, "clicks_per_active_day": 0.01834, "revisit_ratio": 0.00616, "study_duration": 0.00165, "first_registration": 0.00568, "activity_entropy": 0.05863, "avg_gap_between_logins": 0.01312, "burstiness_index": 0.00534, "engagement_efficiency": 0.00516, "cbii": 0.04102, "tpi": 0.02904, "dropout_risk_proxy": 0.01279}, "htbt": {"probs": {"Distinction": 0.4878, "Fail": 0.0383, "Pass": 0.4187, "Withdrawn": 0.0553}, "pred": "Distinction", "attention": [0.03177, 0.02681, 0.02662, 0.02689, 0.0271, 0.02695, 0.02724, 0.03196, 0.02745, 0.02775, 0.02773, 0.02772, 0.03286, 0.03292, 0.02836, 0.03397, 0.03008, 0.0291, 0.0359, 0.03462, 0.03804, 0.03908, 0.04006, 0.04813, 0.0406, 0.04028, 0.04012, 0.03984, 0.04009, 0.03998], "daily_clicks_log1p": [0.0, 2.079, 1.609, 0.693, 3.951, 0.693, 3.871, 0.0, 2.565, 2.708, 1.609, 1.946, 0.0, 0.0, 1.792, 0.0, 1.946, 0.693, 2.303, 1.099, 4.06, 4.654, 2.565, 0.0, 2.565, 1.386, 2.303, 1.386, 3.466, 2.197]}}]}</script>
+<script>
+const DB = JSON.parse(document.getElementById('DATA').textContent);
+
+const FRIENDLY = {
+  code_module:"المقرر", code_presentation:"الفصل الدراسي", gender:"الجنس", region:"المنطقة",
+  highest_education:"أعلى مؤهل تعليمي", imd_band:"شريحة الحرمان الاجتماعي", age_band:"الفئة العمرية",
+  num_of_prev_attempts:"محاولات سابقة", studied_credits:"الساعات المسجَّلة", disability:"إعاقة معلنة",
+  avg_score:"متوسط درجات التقييم", num_assessments:"التقييمات المُسلَّمة",
+  first_submission:"يوم أول تسليم", last_submission:"يوم آخر تسليم",
+  weighted_score:"الدرجة الموزونة", performance_trend:"اتجاه الأداء (ميل)",
+  total_clicks:"إجمالي النقرات", avg_clicks_per_visit:"متوسط النقرات لكل زيارة",
+  max_clicks_per_visit:"أعلى نقرات في زيارة", std_clicks:"تذبذب النقرات",
+  active_days:"أيام النشاط", last_activity_day:"يوم آخر نشاط", unique_vle_sites:"عدد المصادر المستخدمة",
+  clicks_per_active_day:"النقرات لكل يوم نشط", revisit_ratio:"نسبة إعادة الزيارة",
+  study_duration:"مدة الدراسة المقرَّرة (أيام)", first_registration:"يوم التسجيل",
+  activity_entropy:"تشتّت النشاط (إنتروبيا)", avg_gap_between_logins:"متوسط الفجوة بين الدخولات",
+  burstiness_index:"تقطّع النشاط", engagement_efficiency:"كفاءة التفاعل",
+  cbii:"المؤشر المعرفي السلوكي (CBII)", tpi:"مؤشر الاستمرارية الزمنية (TPI)",
+  dropout_risk_proxy:"المؤشر المركّب للخطر"
+};
+const GROUPS_AR = {Assessment:"التقييم", Engagement:"التفاعل", Temporal:"السلوك الزمني",
+                   Demographic:"البيانات الديموغرافية", Composite:"المؤشرات المركّبة"};
+const CLASS_AR = {Distinction:"امتياز", Fail:"رسوب", Pass:"نجاح", Withdrawn:"انسحاب"};
+const VALUE_AR = {
+  M:"ذكر", F:"أنثى", Y:"نعم", N:"لا",
+  "Lower Than A Level":"أقل من الثانوية", "A Level or Equivalent":"ثانوية أو ما يعادلها",
+  "HE Qualification":"مؤهل جامعي", "Post Graduate Qualification":"دراسات عليا",
+  "No Formal quals":"بلا مؤهل رسمي"
+};
+const fname = f => FRIENDLY[f] || f;
+const cls = c => CLASS_AR[c] || c;
+const CN = DB.meta.class_names;
+const AT_RISK = new Set(["Fail","Withdrawn"]);
+let current = 0;
+
+const CASE_AR = {
+  A:["الحالة أ","ملف عالي الخطورة"], B:["الحالة ب","ملف حدّي"],
+  C:["الحالة ج","ملف على المسار الصحيح"], D:["الحالة د","ملف متفوّق"]
+};
+
+const tabsEl = document.getElementById('tabs');
+DB.cases.forEach((c,i)=>{
+  const b=document.createElement('button');
+  b.className='tab'; b.textContent=CASE_AR[c.id][0]; b.title=CASE_AR[c.id][1];
+  b.onclick=()=>{current=i;render();};
+  tabsEl.appendChild(b);
+});
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function pct(x){return (100*x).toFixed(1)+'%';}
+function val(v){
+  if(v===null||v===undefined) return '–';
+  if(typeof v==='number') return (Math.abs(v)>=100?Math.round(v):+v.toFixed(2));
+  return VALUE_AR[v] || v;
+}
+
+function renderProfile(c){
+  const el=document.getElementById('profile'); el.innerHTML='';
+  for(const [g,feats] of Object.entries(DB.meta.feature_groups)){
+    const rows = feats.filter(f=>f in c.features_raw).map(f=>{
+      const v = val(c.features_raw[f]);
+      const isNum = typeof c.features_raw[f]==='number';
+      return `<div class="prow"><span class="k">${esc(fname(f))}</span>
+        <span class="v"${isNum?'':' style="direction:rtl"'}>${esc(v)}</span></div>`;
+    }).join('');
+    el.insertAdjacentHTML('beforeend',
+      `<div class="pgroup"><h3>${esc(GROUPS_AR[g]||g)}</h3>${rows}</div>`);
+  }
+}
+
+function probRows(probs,pred){
+  return CN.map(cl=>{
+    const p=probs[cl]||0, isP=cl===pred;
+    return `<div class="prob"><span class="lbl ${isP?'pred':''}">${cls(cl)}</span>
+      <span class="track"><span class="fill ${isP?'pred':''}" style="width:${(100*p).toFixed(1)}%"
+        title="${cls(cl)}: ${pct(p)}"></span></span>
+      <span class="pct">${pct(p)}</span></div>`;
+  }).join('');
+}
+function chip(pred){
+  return AT_RISK.has(pred)
+    ? `<span class="chip risk">&#9888; معرَّض للخطر &mdash; المتوقَّع: ${cls(pred)}</span>`
+    : `<span class="chip ok">&#10003; على المسار الصحيح &mdash; المتوقَّع: ${cls(pred)}</span>`;
+}
+function renderModels(c){
+  document.getElementById('models').innerHTML = `
+    <div class="model"><h3>النموذج ١ &middot; <span class="en">XGBoost</span></h3>
+      <div class="mnote">أشجار معزَّزة على ٣٤ مؤشرًا جدوليًا</div>
+      ${chip(c.pred)}${probRows(c.probs,c.pred)}</div>
+    <div class="model"><h3>النموذج ٢ &middot; محوّل <span class="en">HTBT</span></h3>
+      <div class="mnote">تسلسل النشاط اليومي + الملف الثابت، عبر الانتباه المتقاطع</div>
+      ${chip(c.htbt.pred)}${probRows(c.htbt.probs,c.htbt.pred)}</div>`;
+  document.getElementById('agree').innerHTML = c.pred===c.htbt.pred
+    ? `النموذجان متفقان على <b>${cls(c.pred)}</b>.`
+    : `&#9888; النموذجان مختلفان (<span class="en">XGBoost</span>: <b>${cls(c.pred)}</b> &middot; <span class="en">HTBT</span>: <b>${cls(c.htbt.pred)}</b>) &mdash; إشارة إلى ضرورة فحص التفسيرات قبل اتخاذ أي إجراء.`;
+}
+
+function topK(obj,k){
+  return Object.entries(obj).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,k);
+}
+function signedPanel(title,note,obj,c){
+  const items=topK(obj,8);
+  const mx=Math.max(...items.map(([,v])=>Math.abs(v)))||1;
+  const rows=items.map(([f,v])=>{
+    const w=(48*Math.abs(v)/mx).toFixed(1);
+    const bar=v>=0?`<span class="bar p" style="width:${w}%"></span>`
+                  :`<span class="bar n" style="width:${w}%"></span>`;
+    return `<div class="xrow" title="${esc(fname(f))} = ${esc(val(c.features_raw[f]))} | المساهمة ${v>=0?'+':''}${v.toFixed(3)}">
+      <span class="fn">${esc(fname(f))}</span>
+      <span class="dtrack"><span class="mid"></span>${bar}</span></div>`;
+  }).join('');
+  return `<div><h3 style="font-size:13px;margin:0 0 2px">${title}</h3>
+    <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">${note}</div>${rows}</div>`;
+}
+function renderXp(c){
+  const hyb=topK(c.hybrid,8);
+  const mx=Math.max(...hyb.map(([,v])=>Math.abs(v)))||1;
+  const hybRows=hyb.map(([f,v])=>
+    `<div class="xrow" title="${esc(fname(f))} = ${esc(val(c.features_raw[f]))} | الوزن ${v.toFixed(3)}">
+      <span class="fn">${esc(fname(f))}</span>
+      <span class="mtrack"><span class="bar" style="width:${(96*v/mx).toFixed(1)}%"></span></span></div>`).join('');
+  const w=c.adaptive_weight_shap;
+  document.getElementById('xpanels').innerHTML =
+    signedPanel('<span class="en">SHAP</span>','مساهمات محسوبة بنظرية الألعاب',c.shap,c) +
+    signedPanel('<span class="en">LIME</span>','نموذج بديل محلي حول هذا الطالب',c.lime,c) +
+    `<div><h3 style="font-size:13px;margin:0 0 2px">الهجين التكيفي</h3>
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">مزج موزون بالأمانة، لكل طالب على حدة</div>
+      <div class="wnote">المزج لهذا الطالب: <b><span class="num">${Math.round(w*100)}%</span> <span class="en">SHAP</span></b>
+        / <span class="num">${Math.round((1-w)*100)}%</span> <span class="en">LIME</span>
+        <span class="wbar"><i style="width:${(100*w).toFixed(0)}%"></i></span></div>${hybRows}</div>`;
+}
+
+function renderTemporal(c){
+  const el=document.getElementById('temporal');
+  const A=c.htbt.attention, K=c.htbt.daily_clicks_log1p, N=A.length;
+  const W=860,H1=150,H2=92,padL=52,padR=14,gap=34,padT=16;
+  const H=padT+H1+gap+H2+30;
+  const x=i=>padL+(W-padL-padR)*(i/(N-1));
+  const aMin=Math.min(...A), aMax=Math.max(...A);
+  const aPad=(aMax-aMin)*0.15||0.001;
+  const ay=v=>padT+H1-((v-(aMin-aPad))/((aMax+aPad)-(aMin-aPad)))*H1;
+  const kMax=Math.max(...K,0.001);
+  const y2=padT+H1+gap;
+  const ky=v=>y2+H2-(v/kMax)*H2;
+  const line=A.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${ay(v).toFixed(1)}`).join('');
+  const uni=1/N;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="الانتباه والنشاط لكل يوم">`;
+  for(const gy of [padT,padT+H1/2,padT+H1]) s+=`<line x1="${padL}" x2="${W-padR}" y1="${gy}" y2="${gy}" stroke="var(--grid)"/>`;
+  s+=`<line x1="${padL}" x2="${W-padR}" y1="${ay(uni)}" y2="${ay(uni)}" stroke="var(--axis)" stroke-dasharray="4 4"/>`;
+  s+=`<text x="${W-padR}" y="${ay(uni)-5}" font-size="10.5" fill="var(--muted)" text-anchor="end" direction="rtl">الانتباه المنتظم (1/30)</text>`;
+  s+=`<path d="${line}" fill="none" stroke="var(--s1)" stroke-width="2"/>`;
+  A.forEach((v,i)=>{s+=`<circle data-d="${i}" cx="${x(i).toFixed(1)}" cy="${ay(v).toFixed(1)}" r="3.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/>`;});
+  s+=`<text x="${padL-6}" y="${padT+8}" font-size="10" fill="var(--muted)" text-anchor="end">${aMax.toFixed(3)}</text>`;
+  s+=`<text x="${padL-6}" y="${padT+H1}" font-size="10" fill="var(--muted)" text-anchor="end">${aMin.toFixed(3)}</text>`;
+  s+=`<text x="${padL-38}" y="${padT+H1/2}" font-size="11" fill="var(--ink2)" transform="rotate(-90 ${padL-38} ${padT+H1/2})" text-anchor="middle" direction="rtl">الانتباه</text>`;
+  const bw=(W-padL-padR)/N-2.5;
+  K.forEach((v,i)=>{s+=`<rect data-d="${i}" x="${(x(i)-bw/2).toFixed(1)}" y="${ky(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${(y2+H2-ky(v)).toFixed(1)}" rx="2" fill="var(--s2)"/>`;});
+  s+=`<line x1="${padL}" x2="${W-padR}" y1="${y2+H2}" y2="${y2+H2}" stroke="var(--axis)"/>`;
+  s+=`<text x="${padL-38}" y="${y2+H2/2}" font-size="11" fill="var(--ink2)" transform="rotate(-90 ${padL-38} ${y2+H2/2})" text-anchor="middle" direction="rtl">النشاط</text>`;
+  for(let i=0;i<N;i+=5) s+=`<text x="${x(i).toFixed(1)}" y="${y2+H2+18}" font-size="10.5" fill="var(--muted)" text-anchor="middle" direction="rtl">يوم ${i}</text>`;
+  s+=`</svg>`;
+  el.innerHTML=s+`<div class="legend" style="direction:rtl">
+    <span><b style="background:var(--s1)"></b>انتباه النموذج لكل يوم (متوسط الرؤوس)</span>
+    <span><b style="background:var(--s2)"></b>نشاط الطالب الفعلي لكل يوم (مقياس لوغاريتمي)</span></div>`;
+  const tip=document.getElementById('tip');
+  el.querySelectorAll('[data-d]').forEach(n=>{
+    n.addEventListener('mousemove',e=>{
+      const d=+n.dataset.d;
+      tip.innerHTML=`اليوم ${d} &middot; الانتباه ${A[d].toFixed(4)} &middot; النشاط ${K[d].toFixed(2)}`;
+      tip.style.left=(e.clientX-150)+'px'; tip.style.top=(e.clientY-10)+'px'; tip.style.opacity=1;
+    });
+    n.addEventListener('mouseleave',()=>tip.style.opacity=0);
+  });
+}
+
+function render(){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===current));
+  const c=DB.cases[current];
+  renderProfile(c); renderModels(c); renderXp(c); renderTemporal(c);
+}
+render();
+</script>
+</body>
+</html>
